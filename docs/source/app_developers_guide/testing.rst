@@ -4,7 +4,7 @@ Testing a Transaction Processor
 
 Say we've written a transaction processor -- how can it be tested? In this
 section, we'll see how to test the XO transaction processor described in
-:doc:`txn_family_tutorial` against a mock validator.
+:doc:`writing_transaction_processors/python_sdk` against a mock validator.
 
 Communication with the Validator
 ================================
