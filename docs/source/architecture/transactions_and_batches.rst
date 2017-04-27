@@ -62,7 +62,7 @@ Transaction Family
 In Sawtooth Lake, the set of possible transactions are defined by an extensible
 system called transaction families.  Defining and implementing a new
 transaction family adds to the taxonomy of available transactions which can be
-applied. For example, in the :ref:`transaction-family-tutorial`, we
+applied. For example, in the :ref:`python-SDK`, we
 define a transaction family called "xo" which defines a set of transactions for
 playing tic-tac-toe.
 

@@ -1,3 +1,5 @@
+.. _python-sdk:
+
 **********
 Python SDK
 **********
