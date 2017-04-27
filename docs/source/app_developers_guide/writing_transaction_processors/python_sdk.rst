@@ -5,9 +5,17 @@ Python SDK
 Overview
 ========
 
-This tutorial covers the creation of a new Sawtooth Lake transaction family
-using the Sawtooth Lake SDK. We will construct a transaction handler which
-implements a distributed version of the multi-player game tic-tac-toe.
+This tutorial covers the creation of a new Sawtooth Lake transaction family in
+Python, based on the Sawtooth Lake SDK. We will construct a transaction
+handler which implements a distributed version of the multi-player game tic-
+tac-toe
+
+.. note::
+
+    The SDK contains a fully-implemented version of tic-tac-toe. This tutorial
+    is meant to demonstrate the relevant concepts, rather than to create a
+    complete implementation. See the SDK for full implemenations in
+    multiple languages.
 
 A general description of tic-tac-toe, including the rules, can be found on
 Wikipedia at:
@@ -15,17 +23,20 @@ Wikipedia at:
     https://en.wikipedia.org/wiki/Tic-tac-toe
 
 A full implementation of the tic-tac-toe transaction family can be found in
+
+.. TEMPLATE Replace path below with language specific path
+
 ``/project/sawtooth-core/sdk/examples/xo_python/``.
 
 Prerequisites
 =============
 
-This tutorial assumes that you have gone through `getting_started` and are
+This tutorial assumes that you have gone through :doc:`../getting_started` and are
 familiar with the concepts introduced there.
 
 Prior to going through this tutorial, you should have a working vagrant
 environment running to which you can login.  Specific setup instructions are
-available in `getting_started`.
+available in :doc:`../getting_started`.
 
 The Transaction Processor
 =========================
@@ -34,7 +45,7 @@ There are two top-level components of a transaction processor: a processor
 class and a handler class. The SDK provides a general-purpose processor class.
 The handler class is application-dependent and contains the business logic for
 a particular family of transactions. Multiple handlers can be connected to a
-transaction class.
+processor class.
 
 Handlers get called in two ways: an ``apply`` method and various metadata
 methods. The metadata is used to connect the handler to the processor, and
@@ -44,8 +55,10 @@ is made up of ``apply`` and its helper functions, so that's where we'll start.
 The ``apply`` Method
 ====================
 
+.. TEMPLATE Replace transaction and store with parameters for specific language implementation
+
 ``apply`` gets called with two arguments, ``transaction`` and ``state_store``.
-``transaction`` holds the command that is to executed (e.g. taking a space or
+``transaction`` holds the command that is to be executed (e.g. taking a space or
 creating a game), while ``state_store`` stores information about the current
 state of the game (e.g. the board layout and whose turn it is).
 
@@ -58,6 +71,10 @@ start to think about what ``apply`` needs to do. ``apply`` needs to
 4) save the updated game data.
 
 Accordingly, a top-down approach to ``apply`` might look like this:
+
+.. TODO
+    
+    Get code example below for other supported languages
 
 .. code-block:: python
 
@@ -82,12 +99,16 @@ the other three steps all concern the coordination of data.
 Data
 ====
 
+.. TEMPLATE Replace _unpack_transaction with language specific name if necessary
+
 So how do we get data out of the transaction? The transaction consists of a
 header and a payload. The header contains the "signer", which is used to
 identify the current player. The payload will contain an encoding of the game
 name, the action ('create' a game, 'take' a space), and the space (which will
 be an empty string if the action isn't 'take'). So our ``_unpack_transaction``
 function will look like this:
+
+.. TEMPLATE Replace code below with language specific code
 
 .. code-block:: python
 
@@ -103,11 +124,15 @@ function will look like this:
 
         return signer, game_name, action, space
 
+.. TEMPLATE Replace _get_state_data with language specific name if necessary
+
 Before we say how exactly the transaction payload will be decoded, let's look
 at ``_get_state_data``. Now, as far as the handler is concerned, it doesn't
 matter how the game data is stored. The only thing that matters is that given a
 game name, the state store is able to give back the correct game data. (In our
 full XO implementation, the game data is stored in a Merkle-radix tree.)
+
+.. TEMPLATE Replace code below with language specific code
 
 .. code-block:: python
 
@@ -127,6 +152,8 @@ It doesn't matter what exactly the game address is. By convention, we'll store
 game data at an address obtained from hashing the game name prepended with some
 constant:
 
+.. TEMPLATE Replace code below with language specific code
+
 .. code-block:: python
 
     def _make_game_address(self, game_name):
@@ -136,6 +163,8 @@ constant:
 
 Finally, we'll store the game data. To do this, we simply need to encode the
 updated state of the game and store it back at the address from which it came.
+
+.. TEMPLATE Replace code below with language specific code
 
 .. code-block:: python
 
@@ -160,6 +189,8 @@ handler, so as long as we're consistent, it doesn't matter. In this case, we'll
 encode the data as a simple UTF-8 comma-separated value string, but we could
 use something more sophisticated, like CBOR or JSON.
 
+.. TEMPLATE Replace code below with language specific code
+
 .. code-block:: python
 
     def _decode_data(self, data):
@@ -171,8 +202,10 @@ use something more sophisticated, like CBOR or JSON.
 Playing the Game
 ================
 
+.. TEMPLATE Replace path below with language specific SDK link.
+
 All that's left to do is describe how to play tic-tac-toe. The details here
-aren't terribly interesting, and the ``_play_xo`` function could certainly be
+are fairly straighforward, and the ``_play_xo`` function could certainly be
 implemented in different ways. To see our implementation, go to
 ``/project/sawtooth-core/sdk/examples/sawtooth_xo/``. We choose to
 represent the board as a string of length 9, with each character in the string
@@ -187,6 +220,8 @@ And that's all there is to ``apply``! All that's left to do is set up the
 ``XoTransactionHandler`` class and its metadata. The metadata is used to
 *register* the transaction processor with a validator by sending it information
 about what kinds of transactions it can handle.
+
+.. TEMPLATE Replace code below with language specific code
 
 .. code-block:: python
 
